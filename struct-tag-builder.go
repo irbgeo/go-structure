@@ -1,7 +1,6 @@
 package structtagbuilder
 
 import (
-	"fmt"
 	"reflect"
 )
 
@@ -24,7 +23,7 @@ func NewTagBuilder(i interface{}) (StructWithTagsBuilder, error) {
 		i: i,
 	}
 	if reflect.TypeOf(i).Kind() != reflect.Ptr {
-		return nil, fmt.Errorf("needs '*struct' type for sample")
+		return nil, needPrtTypeErr
 	}
 	return ret, nil
 }
@@ -58,10 +57,10 @@ func (r *rowImpl) Writable() interface{} {
 func (r *rowImpl) SaveInto(dst interface{}) error {
 	dstValue := reflect.Indirect(reflect.ValueOf(dst))
 	if !dstValue.CanSet() {
-		return fmt.Errorf("the type of dst is not acceptable")
+		return immutableErr
 	}
 	if dstValue.Type() != r.originalType {
-		return fmt.Errorf("the type of dst is not acceptable")
+		return acceptableTypeErr
 	}
 
 	srcValues := reflect.ValueOf(r.row).Elem()
@@ -76,14 +75,14 @@ func (r *rowImpl) SaveInto(dst interface{}) error {
 
 func (r *rowImpl) AssignFrom(dst interface{}) error {
 	srcValue := reflect.Indirect(reflect.ValueOf(dst))
-	if !srcValue.CanSet() {
-		return fmt.Errorf("the type of dst is not acceptable")
-	}
 	if srcValue.Type() != r.originalType {
-		return fmt.Errorf("the type of dst is not acceptable")
+		return acceptableTypeErr
 	}
 
 	dstValues := reflect.ValueOf(r.row).Elem()
+	if !dstValues.CanSet() {
+		return immutableErr
+	}
 	for i := 0; i < dstValues.NumField(); i++ {
 		name := dstValues.Type().Field(i).Name
 		if sf, ok := srcValue.Type().FieldByName(name); ok {
