@@ -22,14 +22,15 @@ func getTag(fieldName string) string {
 	return strings.ToLower(fieldName)
 }
 ...
-    b, _ := structure.New(new(pkg.Structure))S
-	b.AddTags(getTag)
+b, _ := structure.New(new(pkg.Structure))S
+b.AddTags(getTag)
 
-	err = yaml.Unmarshal([]byte("content for pkg.Structure"), b.Struct())
+err = yaml.Unmarshal([]byte("content for pkg.Structure"), b.Struct())
+
+var src pkg.Structure
+err = b.SaveInto(&actualStruct)
 
 
-	var src pkg.Structure
-	err = b.SaveInto(&actualStruct)
 ...
 
 ```
