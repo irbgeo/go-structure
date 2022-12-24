@@ -12,7 +12,7 @@ This package allows:
 ```golang
 import(
     ...
-    "github.com/irbgeo/structure"
+    structure "github.com/irbgeo/go-structure"
     "external/pkg"
     ...
 )

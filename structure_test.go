@@ -7,7 +7,7 @@ import (
 	"github.com/stretchr/testify/require"
 	"gopkg.in/yaml.v3"
 
-	"github.com/irbgeo/structure"
+	structure "github.com/irbgeo/go-structure"
 )
 
 var testContent = `field1: test-value

@@ -1,4 +1,4 @@
-module github.com/irbgeo/structure
+module github.com/irbgeo/go-structure
 
 go 1.19
 
