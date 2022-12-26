@@ -27,8 +27,8 @@ b.AddTags(getTag)
 
 err = yaml.Unmarshal([]byte("content for pkg.Structure"), b.Struct())
 
-var src pkg.Structure
-err = b.SaveInto(&actualStruct)
+var dst pkg.Structure
+err = b.SaveInto(&dst)
 ...
 
 ```
