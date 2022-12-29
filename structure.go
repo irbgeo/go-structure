@@ -9,10 +9,10 @@ type Structure interface {
 	Struct() any
 	// AddTags adds tags by getTag function to struct's fields.
 	AddTags(getTag func(fieldName string) string)
-	// SaveInto save data to src.
-	SaveInto(src any) error
+	// SaveInto save data to dst.
+	SaveInto(dst any) error
 	// AssignFrom load data to struct.
-	AssignFrom(dst any) error
+	AssignFrom(src any) error
 }
 
 type structure struct {
@@ -48,23 +48,38 @@ func (s *structure) AddTags(getTag func(fieldName string) string) {
 }
 
 func (s *structure) SaveInto(dst any) error {
+	srcValue := reflect.ValueOf(s.st).Elem()
+	if dstMap, ok := dst.(map[string]any); ok {
+		for i := 0; i < srcValue.NumField(); i++ {
+			field := srcValue.Type().Field(i)
+			dstMap[field.Name] = srcValue.Field(i).Interface()
+		}
+		return nil
+	}
+
 	dstValue := reflect.Indirect(reflect.ValueOf(dst))
 	if !dstValue.CanSet() {
 		return immutableErr
 	}
-	srcValue := reflect.ValueOf(s.st).Elem()
 
 	copy(dstValue, srcValue)
 	return nil
 }
 
 func (s *structure) AssignFrom(src any) error {
-	srcValue := reflect.Indirect(reflect.ValueOf(src))
 	dstValue := reflect.ValueOf(s.st).Elem()
 	if !dstValue.CanSet() {
 		return immutableErr
 	}
+	if srcMap, ok := src.(map[string]any); ok {
+		for k, v := range srcMap {
+			val := dstValue.FieldByName(k)
+			val.Set(reflect.ValueOf(v))
+		}
+		return nil
+	}
 
+	srcValue := reflect.Indirect(reflect.ValueOf(src))
 	copy(dstValue, srcValue)
 	return nil
 }
