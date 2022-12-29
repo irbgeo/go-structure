@@ -28,6 +28,7 @@ func (b *builder) AddField(name string, typ interface{}, tag string) {
 	})
 }
 
-func (b *builder) Build() (Structure, error) {
-	return New(reflect.New(reflect.StructOf(b.fields)).Interface())
+func (b *builder) Build() Structure {
+	s, _ := New(reflect.New(reflect.StructOf(b.fields)).Interface())
+	return s
 }

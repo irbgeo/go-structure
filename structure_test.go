@@ -22,12 +22,12 @@ type testStructureWithoutTag struct {
 }
 
 func TestUnmarshal(t *testing.T) {
-	b, err := structure.New(new(testStructureWithoutTag))
+	s, err := structure.New(new(testStructureWithoutTag))
 	require.NoError(t, err)
 
-	b.AddTags(getTag)
+	s.AddTags(getTag)
 
-	err = yaml.Unmarshal([]byte(testContent), b.Struct())
+	err = yaml.Unmarshal([]byte(testContent), s.Struct())
 	require.NoError(t, err)
 
 	expectedStruct := testStructureWithoutTag{
@@ -37,16 +37,16 @@ func TestUnmarshal(t *testing.T) {
 	}
 
 	var actualStruct testStructureWithoutTag
-	err = b.SaveInto(&actualStruct)
+	err = s.SaveInto(&actualStruct)
 	require.NoError(t, err)
 	require.Equal(t, expectedStruct, actualStruct)
 }
 
 func TestMarshal(t *testing.T) {
-	b, err := structure.New(new(testStructureWithoutTag))
+	s, err := structure.New(new(testStructureWithoutTag))
 	require.NoError(t, err)
 
-	b.AddTags(getTag)
+	s.AddTags(getTag)
 
 	expectedStruct := testStructureWithoutTag{
 		Field1: "test-value",
@@ -54,10 +54,10 @@ func TestMarshal(t *testing.T) {
 		Field3: true,
 	}
 
-	err = b.AssignFrom(expectedStruct)
+	err = s.AssignFrom(expectedStruct)
 	require.NoError(t, err)
 
-	actualContent, err := yaml.Marshal(b.Struct())
+	actualContent, err := yaml.Marshal(s.Struct())
 	require.NoError(t, err)
 	require.Equal(t, testContent, string(actualContent))
 }
@@ -110,10 +110,9 @@ func TestBuilder(t *testing.T) {
 	builder.AddField("Field2", 1, `yaml:"field2"`)
 	builder.AddField("Field3", false, `yaml:"field3"`)
 
-	st, err := builder.Build()
-	require.NoError(t, err)
+	st := builder.Build()
 
-	err = yaml.Unmarshal([]byte(testContent), st.Struct())
+	err := yaml.Unmarshal([]byte(testContent), st.Struct())
 	require.NoError(t, err)
 
 	expectedStruct := testStructureWithoutTag{
