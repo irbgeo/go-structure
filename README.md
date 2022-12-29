@@ -1,4 +1,4 @@
-# Struct Tag Builder
+# Go Structure
 
 ## Description
 
