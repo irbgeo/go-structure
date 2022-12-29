@@ -9,6 +9,8 @@ This package allows:
 - to build structure.
 - to add tags to structure.
 - to merge two structure.
+- to fill structure from map
+- to fill map from structure
 
 ## Usage
 

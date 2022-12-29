@@ -21,6 +21,61 @@ type testStructureWithoutTag struct {
 	Field3 bool
 }
 
+func TestSaveIntoMap(t *testing.T) {
+	s, err := structure.New(new(testStructureWithoutTag))
+	require.NoError(t, err)
+
+	s.AddTags(getTag)
+
+	valueStruct := testStructureWithoutTag{
+		Field1: "test-value",
+		Field2: 3,
+		Field3: true,
+	}
+
+	err = s.AssignFrom(valueStruct)
+	require.NoError(t, err)
+
+	actualMap := make(map[string]any)
+
+	expectedMap := map[string]any{
+		"Field1": "test-value",
+		"Field2": 3,
+		"Field3": true,
+	}
+	err = s.SaveInto(actualMap)
+	require.NoError(t, err)
+	require.Equal(t, expectedMap, actualMap)
+}
+
+func TestAssignFromMap(t *testing.T) {
+	s, err := structure.New(new(testStructureWithoutTag))
+	require.NoError(t, err)
+
+	s.AddTags(getTag)
+
+	expectedStruct := testStructureWithoutTag{
+		Field1: "test-value",
+		Field2: 3,
+		Field3: true,
+	}
+
+	valueMap := map[string]any{
+		"Field1": "test-value",
+		"Field2": 3,
+		"Field3": true,
+	}
+
+	err = s.AssignFrom(valueMap)
+	require.NoError(t, err)
+
+	var actualStruct testStructureWithoutTag
+
+	err = s.SaveInto(&actualStruct)
+	require.NoError(t, err)
+	require.Equal(t, expectedStruct, actualStruct)
+}
+
 func TestUnmarshal(t *testing.T) {
 	s, err := structure.New(new(testStructureWithoutTag))
 	require.NoError(t, err)
