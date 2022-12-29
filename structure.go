@@ -74,7 +74,9 @@ func (s *structure) AssignFrom(src any) error {
 	if srcMap, ok := src.(map[string]any); ok {
 		for k, v := range srcMap {
 			val := dstValue.FieldByName(k)
-			val.Set(reflect.ValueOf(v))
+			if !val.IsNil() {
+				val.Set(reflect.ValueOf(v))
+			}
 		}
 		return nil
 	}
