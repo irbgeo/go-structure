@@ -2,7 +2,7 @@
 
 ## Description
 
-A package for creating and modifying a structure in runtime
+The package for creating and modifying a structure in runtime
 
 This package allows:
 
