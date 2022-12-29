@@ -16,9 +16,9 @@ field3: true
 `
 
 type testStructureWithoutTag struct {
-	FieLD1 string
-	FielD2 int
-	FIeld3 bool
+	Field1 string
+	Field2 int
+	Field3 bool
 }
 
 func TestUnmarshal(t *testing.T) {
@@ -31,9 +31,9 @@ func TestUnmarshal(t *testing.T) {
 	require.NoError(t, err)
 
 	expectedStruct := testStructureWithoutTag{
-		FieLD1: "test-value",
-		FielD2: 3,
-		FIeld3: true,
+		Field1: "test-value",
+		Field2: 3,
+		Field3: true,
 	}
 
 	var actualStruct testStructureWithoutTag
@@ -49,9 +49,9 @@ func TestMarshal(t *testing.T) {
 	b.AddTags(getTag)
 
 	expectedStruct := testStructureWithoutTag{
-		FieLD1: "test-value",
-		FielD2: 3,
-		FIeld3: true,
+		Field1: "test-value",
+		Field2: 3,
+		Field3: true,
 	}
 
 	err = b.AssignFrom(expectedStruct)
@@ -101,6 +101,31 @@ func TestMerge(t *testing.T) {
 	err := structure.Merge(&dst, &src)
 	require.NoError(t, err)
 	require.Equal(t, expected, dst)
+}
+
+func TestBuilder(t *testing.T) {
+	builder := structure.NewBuilder()
+
+	builder.AddField("Field1", "example-string", `yaml:"field1"`)
+	builder.AddField("Field2", 1, `yaml:"field2"`)
+	builder.AddField("Field3", false, `yaml:"field3"`)
+
+	st, err := builder.Build()
+	require.NoError(t, err)
+
+	err = yaml.Unmarshal([]byte(testContent), st.Struct())
+	require.NoError(t, err)
+
+	expectedStruct := testStructureWithoutTag{
+		Field1: "test-value",
+		Field2: 3,
+		Field3: true,
+	}
+
+	var actualStruct testStructureWithoutTag
+	err = st.SaveInto(&actualStruct)
+	require.NoError(t, err)
+	require.Equal(t, expectedStruct, actualStruct)
 }
 
 func getTag(fieldName string) string {

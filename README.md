@@ -2,9 +2,12 @@
 
 ## Description
 
+A package for creating and modifying a structure in runtime
+
 This package allows:
 
-- to add tags to an external structure.
+- to build structure.
+- to add tags to structure.
 - to merge two structure.
 
 ## Usage

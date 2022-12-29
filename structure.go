@@ -19,6 +19,7 @@ type structure struct {
 	st any
 }
 
+// New returns Structure by i.
 func New(i any) (Structure, error) {
 	if reflect.TypeOf(i).Kind() != reflect.Ptr {
 		return nil, NeedPrtTypeErr
