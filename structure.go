@@ -50,10 +50,7 @@ func (s *structure) AddTags(getTag func(fieldName string) string) {
 func (s *structure) SaveInto(dst any) error {
 	srcValue := reflect.ValueOf(s.st).Elem()
 	if dstMap, ok := dst.(map[string]any); ok {
-		for i := 0; i < srcValue.NumField(); i++ {
-			field := srcValue.Type().Field(i)
-			dstMap[field.Name] = srcValue.Field(i).Interface()
-		}
+		toMap(dstMap, srcValue)
 		return nil
 	}
 
@@ -72,16 +69,11 @@ func (s *structure) AssignFrom(src any) error {
 		return immutableErr
 	}
 	if srcMap, ok := src.(map[string]any); ok {
-		for k, v := range srcMap {
-			val := dstValue.FieldByName(k)
-			if val.IsValid() {
-				val.Set(reflect.ValueOf(v))
-			}
-		}
+		fromMap(dstValue, srcMap)
 		return nil
 	}
-
 	srcValue := reflect.Indirect(reflect.ValueOf(src))
+
 	copy(dstValue, srcValue)
 	return nil
 }
@@ -107,6 +99,40 @@ func copy(dst, src reflect.Value) {
 		name := dst.Type().Field(i).Name
 		if sf, ok := src.Type().FieldByName(name); ok && sf.Type == dst.Type().Field(i).Type {
 			dst.FieldByIndex(sf.Index).Set(src.Field(i))
+		}
+	}
+}
+
+// SaveStructToMap saves data into dst map from src struct.
+// key of map equals struct field name.
+func SaveStructToMap(dst map[string]any, src any) error {
+	toMap(dst, reflect.ValueOf(src).Elem())
+	return nil
+}
+
+func toMap(dst map[string]any, srcValue reflect.Value) {
+	for i := 0; i < srcValue.NumField(); i++ {
+		field := srcValue.Type().Field(i)
+		dst[field.Name] = srcValue.Field(i).Interface()
+	}
+}
+
+// AssignStructFromMap saves data into dst struct from src map.
+// key of map equals struct field name.
+func AssignStructFromMap(dst any, src map[string]any) error {
+	dstValue := reflect.ValueOf(dst).Elem()
+	if !dstValue.CanSet() {
+		return immutableErr
+	}
+	fromMap(dstValue, src)
+	return nil
+}
+
+func fromMap(dstValue reflect.Value, src map[string]any) {
+	for k, v := range src {
+		val := dstValue.FieldByName(k)
+		if val.IsValid() {
+			val.Set(reflect.ValueOf(v))
 		}
 	}
 }
