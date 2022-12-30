@@ -21,6 +21,10 @@ type testStructureWithoutTag struct {
 	Field3 bool
 }
 
+func getTag(fieldName string) string {
+	return strings.ToLower(fieldName)
+}
+
 func TestSaveIntoMap(t *testing.T) {
 	s, err := structure.New(new(testStructureWithoutTag))
 	require.NoError(t, err)
@@ -44,6 +48,24 @@ func TestSaveIntoMap(t *testing.T) {
 		"Field3": true,
 	}
 	err = s.SaveInto(actualMap)
+	require.NoError(t, err)
+	require.Equal(t, expectedMap, actualMap)
+}
+
+func TestSaveStructIntoMap(t *testing.T) {
+	valueStruct := testStructureWithoutTag{
+		Field1: "test-value",
+		Field2: 3,
+		Field3: true,
+	}
+	expectedMap := map[string]any{
+		"Field1": "test-value",
+		"Field2": 3,
+		"Field3": true,
+	}
+
+	actualMap := make(map[string]any)
+	err := structure.SaveStructToMap(actualMap, &valueStruct)
 	require.NoError(t, err)
 	require.Equal(t, expectedMap, actualMap)
 }
@@ -72,6 +94,25 @@ func TestAssignFromMap(t *testing.T) {
 	var actualStruct testStructureWithoutTag
 
 	err = s.SaveInto(&actualStruct)
+	require.NoError(t, err)
+	require.Equal(t, expectedStruct, actualStruct)
+}
+
+func TestAssignStructFromMap(t *testing.T) {
+	expectedStruct := testStructureWithoutTag{
+		Field1: "test-value",
+		Field2: 3,
+		Field3: true,
+	}
+
+	valueMap := map[string]any{
+		"Field1": "test-value",
+		"Field2": 3,
+		"Field3": true,
+	}
+
+	var actualStruct testStructureWithoutTag
+	err := structure.AssignStructFromMap(&actualStruct, valueMap)
 	require.NoError(t, err)
 	require.Equal(t, expectedStruct, actualStruct)
 }
@@ -180,8 +221,4 @@ func TestBuilder(t *testing.T) {
 	err = st.SaveInto(&actualStruct)
 	require.NoError(t, err)
 	require.Equal(t, expectedStruct, actualStruct)
-}
-
-func getTag(fieldName string) string {
-	return strings.ToLower(fieldName)
 }

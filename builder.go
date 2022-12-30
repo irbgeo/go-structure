@@ -8,7 +8,7 @@ type StructureBuilder interface {
 	// Add field to structure.
 	AddField(name string, typ interface{}, tag string)
 	// Build structure
-	Build() (Structure, error)
+	Build() Structure
 }
 
 type builder struct {
@@ -16,7 +16,7 @@ type builder struct {
 }
 
 // NewBuilder return structure builder.
-func NewBuilder() *builder {
+func NewBuilder() StructureBuilder {
 	return &builder{}
 }
 
