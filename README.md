@@ -150,3 +150,8 @@ Merge two different structs.
 	// 	Field3: true,
 	// }
 ```
+
+## TODO
+
+    - Benchmarks
+    - to add tag to substructs
