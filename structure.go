@@ -37,17 +37,17 @@ func (s *structure) Struct() any {
 }
 
 func (s *structure) ChangeTags(getNewTag func(fieldName, fieldTag string) string) {
-	st := addTags(reflect.ValueOf(s.st).Elem(), getNewTag)
+	st := changeTags(reflect.ValueOf(s.st).Elem(), getNewTag)
 	s.st = reflect.New(st).Interface()
 }
 
-func addTags(v reflect.Value, getNewTag func(fieldName, fieldTag string) string) reflect.Type {
+func changeTags(v reflect.Value, getNewTag func(fieldName, fieldTag string) string) reflect.Type {
 	var fields []reflect.StructField
 	for i := 0; i < v.NumField(); i++ {
 		f := v.Type().Field(i)
 		f.Tag = reflect.StructTag(getNewTag(f.Name, string(f.Tag)))
 		if v.Field(i).Kind() == reflect.Struct {
-			f.Type = addTags(v.Field(i), getNewTag)
+			f.Type = changeTags(v.Field(i), getNewTag)
 		}
 		fields = append(fields, f)
 	}

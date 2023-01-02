@@ -28,7 +28,7 @@ structure "github.com/irbgeo/go-structure"
     b, _ := structure.New(new(pkg.Structure))
 ```
 
-2. Add tag to structure
+2. Change tags in structure
 
 ```golang
     b.ChangeTags(getNewTag)
