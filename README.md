@@ -6,8 +6,8 @@ The package for creating and modifying a structure in runtime
 
 This package allows:
 
+- to change tags to fields of external structure.
 - to build structure.
-- to add tags to structure.
 - to merge two structure.
 - to fill structure from another structure or map
 - to fill another structure or map from structure
@@ -31,9 +31,9 @@ structure "github.com/irbgeo/go-structure"
 2. Add tag to structure
 
 ```golang
-    b.AddTags(getTag)
+    b.ChangeTags(getNewTag)
 
-    func getTag(fieldName string) string {
+    func getNewTag(fieldName, fieldTag string) string {
         return strings.ToLower(fieldName)
     }
 ```

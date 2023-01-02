@@ -8,8 +8,8 @@ import (
 type Structure interface {
 	// Struct returns struct.
 	Struct() any
-	// AddTags adds tags by getTag function to struct's fields.
-	AddTags(getTag func(fieldName, fieldTag string) string)
+	// ChangeTags changes tags by getNewTag function to struct's fields.
+	ChangeTags(getNewTag func(fieldName, fieldTag string) string)
 	// SaveInto save data to dst.
 	SaveInto(dst any) error
 	// AssignFrom load data to struct.
@@ -36,18 +36,18 @@ func (s *structure) Struct() any {
 	return s.st
 }
 
-func (s *structure) AddTags(getTag func(fieldName, fieldTag string) string) {
-	st := addTags(reflect.ValueOf(s.st).Elem(), getTag)
+func (s *structure) ChangeTags(getNewTag func(fieldName, fieldTag string) string) {
+	st := addTags(reflect.ValueOf(s.st).Elem(), getNewTag)
 	s.st = reflect.New(st).Interface()
 }
 
-func addTags(v reflect.Value, getTag func(fieldName, fieldTag string) string) reflect.Type {
+func addTags(v reflect.Value, getNewTag func(fieldName, fieldTag string) string) reflect.Type {
 	var fields []reflect.StructField
 	for i := 0; i < v.NumField(); i++ {
 		f := v.Type().Field(i)
-		f.Tag = reflect.StructTag(getTag(f.Name, string(f.Tag)))
+		f.Tag = reflect.StructTag(getNewTag(f.Name, string(f.Tag)))
 		if v.Field(i).Kind() == reflect.Struct {
-			f.Type = addTags(v.Field(i), getTag)
+			f.Type = addTags(v.Field(i), getNewTag)
 		}
 		fields = append(fields, f)
 	}

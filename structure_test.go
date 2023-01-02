@@ -21,7 +21,7 @@ type testStructureWithoutTag struct {
 	Field3 bool
 }
 
-func getTag(fieldName, fieldTag string) string {
+func getNewTag(fieldName, fieldTag string) string {
 	return strings.ToLower(fieldName)
 }
 
@@ -29,7 +29,7 @@ func TestSaveIntoMap(t *testing.T) {
 	s, err := structure.New(new(testStructureWithoutTag))
 	require.NoError(t, err)
 
-	s.AddTags(getTag)
+	s.ChangeTags(getNewTag)
 
 	valueStruct := testStructureWithoutTag{
 		Field1: "test-value",
@@ -74,7 +74,7 @@ func TestAssignFromMap(t *testing.T) {
 	s, err := structure.New(new(testStructureWithoutTag))
 	require.NoError(t, err)
 
-	s.AddTags(getTag)
+	s.ChangeTags(getNewTag)
 
 	expectedStruct := testStructureWithoutTag{
 		Field1: "test-value",
@@ -121,7 +121,7 @@ func TestUnmarshal(t *testing.T) {
 	s, err := structure.New(new(testStructureWithoutTag))
 	require.NoError(t, err)
 
-	s.AddTags(getTag)
+	s.ChangeTags(getNewTag)
 
 	err = yaml.Unmarshal([]byte(testContent), s.Struct())
 	require.NoError(t, err)
@@ -142,7 +142,7 @@ func TestMarshal(t *testing.T) {
 	s, err := structure.New(new(testStructureWithoutTag))
 	require.NoError(t, err)
 
-	s.AddTags(getTag)
+	s.ChangeTags(getNewTag)
 
 	expectedStruct := testStructureWithoutTag{
 		Field1: "test-value",
