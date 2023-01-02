@@ -21,7 +21,7 @@ type testStructureWithoutTag struct {
 	Field3 bool
 }
 
-func getTag(fieldName string) string {
+func getTag(fieldName, fieldTag string) string {
 	return strings.ToLower(fieldName)
 }
 
