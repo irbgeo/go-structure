@@ -33,7 +33,7 @@ structure "github.com/irbgeo/go-structure"
 ```golang
     b.ChangeTags(getNewTag)
 
-    func getNewTag(fieldName, fieldTag string) string {
+    func getNewTag(fieldName, fieldTag, fieldType string) string {
         return strings.ToLower(fieldName)
     }
 ```
